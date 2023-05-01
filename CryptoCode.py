@@ -5,7 +5,8 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 import openpyxl as xl
-from openpyxl.styles import Font, Color
+from openpyxl.styles import Font
+from openpyxl.styles import numbers
 import locale
 
 
@@ -83,12 +84,19 @@ for row in table_rows[1:6]:
     write_sheet.cell(i, 1).value = symbol
     write_sheet.cell(i, 2).value = name
     write_sheet.cell(i, 3).value = '$' + str(round_current_price)
-    font = Font(color="00FF00")
+    font = Font(color="008000")
     write_sheet.cell(i, 4).value = percent_change
     write_sheet.cell(i, 4).font = font
     # percent_change.font = font
     write_sheet.cell(i, 5).value = '$' + str(round_yesterday_price)
     i += 1
+
+    for row in ws.iter_rows(min_row=2, max_row=6, min_col=5, max_col=5):
+        for cell in row:
+            cell.number_format = numbers.FORMAT_CURRENCY_USD_SIMPLE
+
+
+wb.save('CryptoReport.xlsx')
 
 
 # New website to send me a text about bitcoina and ethereum
@@ -148,6 +156,3 @@ for row in table_rows[1:6]:
             textmsg = client.messages.create(
                 to=myphone, from_=TWnumber, body=message)
             print(textmsg.status)
-
-
-wb.save('CryptoReport.xlsx')
