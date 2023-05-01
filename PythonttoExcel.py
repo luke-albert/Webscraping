@@ -49,25 +49,65 @@ wb.save('PythontoExcel.xlsx')
 write_sheet = wb['Second Sheet']
 
 read_wb = xl.load_workbook('ProduceReport.xlsx')
-read_ws = read_wb['ProduceReport']
+read_ws = read_wb['ProduceReport']  # the actual sheet that i am reading
 
+write_sheet['A1'] = 'Produce'
+write_sheet['B1'] = 'Cost Per Pound'
+write_sheet['C1'] = 'Amt Sold'
+write_sheet['D1'] = 'Total'
+
+write_row = 2
+write_colA = 1
+write_colB = 2
+write_colC = 3
+write_colD = 4
 
 maxC = read_ws.max_column
 maxR = read_ws.max_row
 
 
 i = 1
-for currentrow in read_ws.iter_rows(min_row=1, max_row=read_ws.max_row, max_col=read_ws.max_column):
+for currentrow in read_ws.iter_rows(min_row=2, max_row=maxR, max_col=maxC):
     fruit = (currentrow[0].value)
-    cost = (currentrow[1].value)
-    sold = (currentrow[2].value)
-    total = (currentrow[3].value)
-    write_sheet.cell(i, 1).value = fruit
-    write_sheet.cell(i, 2).value = cost
-    write_sheet.cell(i, 3).value = sold
-    write_sheet.cell(i, 4).value = total
-    i += 1
-    # print(currentrow[1].value)
-    # print(currentrow[2].value)
+    cost = float(currentrow[1].value)
+    amt_sold = float(currentrow[2].value)
+    total = float(currentrow[3].value)
+
+    write_sheet.cell(write_row, write_colA).value = fruit
+    write_sheet.cell(write_row, write_colB).value = cost
+    write_sheet.cell(write_row, write_colC).value = amt_sold
+    write_sheet.cell(write_row, write_colD).value = total
+
+    write_row += 1
+
+summary_row = write_row + 1
+
+write_sheet['B' + str(summary_row)] = 'Total'  # puts total into B43
+write_sheet['B' + str(summary_row)].font = Font(size=16, bold=True)
+
+write_sheet['C' + str(summary_row)] = '=SUM(C2:C' + \
+    str(write_row) + ')'  # makes it dynamic
+write_sheet['D' + str(summary_row)] = '=SUM(D2:C' + str(write_row) + ')'
+
+summary_row += 1
+
+write_sheet['B' + str(summary_row)] = 'Average'  # puts total into B43
+write_sheet['B' + str(summary_row)].font = Font(size=16, bold=True)
+
+write_sheet['C' + str(summary_row)] = '=AVERAGE(C2:C' + \
+    str(write_row) + ')'  # makes it dynamic
+write_sheet['D' + str(summary_row)] = '=AVERAGE(D2:C' + str(write_row) + ')'
+
+write_sheet.column_dimensions['A'].width = 16
+write_sheet.column_dimensions['B'].width = 15
+write_sheet.column_dimensions['C'].width = 15
+write_sheet.column_dimensions['D'].width = 15
+
+for cell in write_sheet["C:C"]:
+    cell.number_format = '#,##0.00'
+
+    for cell in write_sheet["D:D"]:
+        cell.number_format = u'#$ "#,##0.00'
+
 
 wb.save('PythontoExcel.xlsx')

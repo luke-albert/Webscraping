@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 import openpyxl as xl
 from openpyxl.styles import Font, Color
-# from openpyxl.styles.colors import GREEN
 import locale
 
 
@@ -74,18 +73,19 @@ for row in table_rows[1:6]:
     # BREAK
 
     current_price_without_dollarsign = current_price.replace('$', '')
+    round_current_price = round(float(current_price_without_dollarsign), 5)
     percent_change_without_sign = percent_change.replace('%', '')
     number_as_percent = float(percent_change_without_sign) / 100
     yesterday_price = float(
         current_price_without_dollarsign) / (1 + number_as_percent)
-    round_yesterday_price = round(yesterday_price, 2)
+    round_yesterday_price = round(yesterday_price, 5)
 
     write_sheet.cell(i, 1).value = symbol
     write_sheet.cell(i, 2).value = name
-    write_sheet.cell(i, 3).value = current_price
-    # font = Font(color=GREEN)
+    write_sheet.cell(i, 3).value = '$' + str(round_current_price)
+    font = Font(color="00FF00")
     write_sheet.cell(i, 4).value = percent_change
-   # write_sheet.cell(i, 4).font = font
+    write_sheet.cell(i, 4).font = font
     # percent_change.font = font
     write_sheet.cell(i, 5).value = '$' + str(round_yesterday_price)
     i += 1
