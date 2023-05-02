@@ -74,12 +74,12 @@ for row in table_rows[1:6]:
     # BREAK
 
     current_price_without_dollarsign = current_price.replace('$', '')
-    round_current_price = round(float(current_price_without_dollarsign), 5)
+    round_current_price = round(float(current_price_without_dollarsign), 4)
     percent_change_without_sign = percent_change.replace('%', '')
     number_as_percent = float(percent_change_without_sign) / 100
     yesterday_price = float(
         current_price_without_dollarsign) / (1 + number_as_percent)
-    round_yesterday_price = round(yesterday_price, 5)
+    round_yesterday_price = round(yesterday_price, 4)
 
     write_sheet.cell(i, 1).value = symbol
     write_sheet.cell(i, 2).value = name
@@ -143,8 +143,6 @@ for row in table_rows[1:6]:
             textmsg = client.messages.create(
                 to=myphone, from_=TWnumber, body=message)
             print(textmsg.status)
-        else:
-            print('hello')
 
     if name == 'Ethereum':
         if abs(float(current_price_without_dollarsign) - float(yesterday_price)) > 5:
